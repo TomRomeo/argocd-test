@@ -8,13 +8,15 @@ spec:
     - git:
         repoURL: https://github.com/tomromeo/argocd-test
         revision: HEAD
-        directories:
-          - path: apps/podinfo/**/config.yaml
+        files:
+          - path: "apps/podinfo/**/config.yaml"
           - path: apps/podinfo/base
             exclude: true
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   template:
     metadata:
-      name: 'podinfo-{{path.basename}}'
+      name: 'podinfo-{{.path.basename}}'
     spec:
       project: default
       destination:
@@ -31,7 +33,8 @@ spec:
           targetRevision: HEAD
           path: charts/podinfo
           helm:
-            valuesObject: {{ .config.values | toYaml | nindent 12 }}
+            values: |
+              {{ .config.values | toYaml }}
         - repoURL: https://github.com/tomromeo/argocd-test
           targetRevision: HEAD
           path: apps/podinfo/base
