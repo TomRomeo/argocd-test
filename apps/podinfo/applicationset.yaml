@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: podinfo
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/tomromeo/argocd-test
+        targetRevision: HEAD
+        directories:
+          - path: apps/podinfo/*
+          - path: apps/podinfo/base
+            exclude: true
+  template:
+    metadata:
+      name: 'podinfo-{{path.basename}}'
+    spec:
+      project: default
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        automated:
+          selfHeal: true
+          prune: true
+    sources:
+      - repoURL: https://github.com/stefanprodan/podinfo
+        targetRevision: HEAD
+        path: charts/podinfo
+        helm:
+          valueFiles:
+            - "apps/podinfo/base/values.yaml"
+            - "apps/podinfo/{{path.basename}}/values.yaml"
+      - repoURL: https://github.com/tomromeo/argocd-test
+        targetRevision: HEAD
+        path: apps/podinfo/base
