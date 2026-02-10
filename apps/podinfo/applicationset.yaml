@@ -31,7 +31,7 @@ spec:
           targetRevision: HEAD
           path: charts/podinfo
           helm:
-            valuesObject: {{ .values }}
+            valuesObject: {{ .config.values | toYaml | nindent 12 }}
         - repoURL: https://github.com/tomromeo/argocd-test
           targetRevision: HEAD
           path: apps/podinfo/base
