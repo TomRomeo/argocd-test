@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: test-configmap
   namespace: default
-stringData:
+data:
   testKey: testValue
