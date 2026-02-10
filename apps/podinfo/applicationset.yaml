@@ -9,7 +9,7 @@ spec:
         repoURL: https://github.com/tomromeo/argocd-test
         revision: HEAD
         directories:
-          - path: apps/podinfo/*
+          - path: apps/podinfo/**/config.yaml
           - path: apps/podinfo/base
             exclude: true
   template:
@@ -31,9 +31,7 @@ spec:
           targetRevision: HEAD
           path: charts/podinfo
           helm:
-            valueFiles:
-              - "apps/podinfo/base/values.yaml"
-              - "apps/podinfo/{{path.basename}}/values.yaml"
+            valuesObject: {{ .values }}
         - repoURL: https://github.com/tomromeo/argocd-test
           targetRevision: HEAD
           path: apps/podinfo/base
